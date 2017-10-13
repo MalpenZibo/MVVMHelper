@@ -11,7 +11,7 @@ namespace MVVMHelper.Services
 {
     public interface IServiceHost
     {
-        Task<T> ShowDialog<T>( string hostname, object content, string title, string confirmButton, Action confirmAction, string cancelButton, Action cancelAction, DialogType type );
+        Task<bool> ShowDialog( string hostname, object content, string title, string confirmButton, Action confirmAction, string cancelButton, Action cancelAction, DialogType type );
         
         void CloseDialog( bool result );
 

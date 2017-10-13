@@ -18,7 +18,8 @@ namespace MVVMHelper.Services
         {
             ERROR,
             MESSAGE,
-            CUSTOM
+            CUSTOM,
+            VIEW
         }
 
         private ContentNavigationService cns;
@@ -39,7 +40,7 @@ namespace MVVMHelper.Services
 
         public async Task ShowError( string message, string title, string buttonText, string hostname = null )
         {
-            await host.ShowDialog<bool>( 
+            await host.ShowDialog( 
                 ( hostname != null ? hostname : DefaultHostname ), 
                 message, 
                 title, 
@@ -58,7 +59,7 @@ namespace MVVMHelper.Services
 
         public async Task<bool> ShowConfirmMessage( string message, string title, string buttonConfirmText, string buttonCancelText, string hostname = null )
         {
-            return await host.ShowDialog<bool>( 
+            return await host.ShowDialog( 
                 ( hostname != null ? hostname : DefaultHostname ),
                 message, 
                 title, 
@@ -97,7 +98,7 @@ namespace MVVMHelper.Services
                 }
             }
             
-            return await host.ShowDialog<bool>( 
+            return await host.ShowDialog( 
                 ( hostname != null ? hostname : DefaultHostname ), 
                 content, 
                 null, 
@@ -107,6 +108,20 @@ namespace MVVMHelper.Services
                 cancel, 
                 DialogType.CUSTOM 
             );
+        }
+
+        public async Task<bool> ShowCustomDialog( object view, string hostname = null )
+        {
+            return await host.ShowDialog( 
+                ( hostname != null ? hostname : DefaultHostname ), 
+                view, 
+                null, 
+                null, 
+                null, 
+                null, 
+                null, 
+                DialogType.VIEW 
+            );            
         }
 
         private void CallNavigation( FrameworkElement content, object parameter )

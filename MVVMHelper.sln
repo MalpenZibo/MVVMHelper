@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMHelper", "MVVMHelper.csproj", "{45D857FA-2CF6-4BE9-8528-726933448135}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Publish|Any CPU = Publish|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Publish|Any CPU.Build.0 = Publish|Any CPU
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D857FA-2CF6-4BE9-8528-726933448135}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83B2BAB5-511D-4173-B66C-032B418E11F1}
+	EndGlobalSection
+EndGlobal

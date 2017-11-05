@@ -82,20 +82,28 @@ namespace MVVMHelper.Services
                 CallNavigation( fe, parameter );
 
                 var interactive = fe.DataContext as IInteractive;
-                if( interactive != null )
-                {
-                    confirm = async () => 
-                    { 
+
+                confirm = async () => 
+                { 
+                    if( interactive != null )
+                    {
                         if( await interactive.Confirm() )
                             host.CloseDialog( true );
-                    };
+                    }
+                    else
+                        host.CloseDialog( true );
+                };
 
-                    cancel = async () => 
-                    { 
+                cancel = async () => 
+                { 
+                    if( interactive != null )
+                    {
                         if( await interactive.Abort() )
-                            host.CloseDialog( true );
-                    };
-                }
+                            host.CloseDialog( false );
+                    }
+                    else
+                         host.CloseDialog( false );
+                };
             }
             
             return await host.ShowDialog( 

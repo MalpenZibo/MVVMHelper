@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace MVVMHelper.Helpers
@@ -176,9 +177,14 @@ namespace MVVMHelper.Helpers
 
                 //se il controllo di riferimento non è null
                 if( parent != null )
-                    //recupero il padre del controllo di riferimento
-                    //e lo setto come nuovo controllo di riferimento
-                    parent = VisualTreeHelper.GetParent( parent );
+                {
+                    if( parent is Run )
+                        parent = ( parent as Run ).Parent;
+                    else
+                        //recupero il padre del controllo di riferimento
+                        //e lo setto come nuovo controllo di riferimento
+                        parent = VisualTreeHelper.GetParent( parent );                
+                }
             }
 
             //se esco dal ciclo vuol dire che non ho trovato ciò che cercavo

@@ -15,7 +15,7 @@ namespace MVVMHelper.Services
     /// <summary>
     /// Servizio di gestione della navigazione tra le pagine sfruttando i ContentControl
     /// </summary>
-    public class ContentNavigationService : INavigationService
+    public class ContentNavigationService
 	{
         /// <summary>
         /// Evento di notifica della navigazione verso una pagina
@@ -110,16 +110,16 @@ namespace MVVMHelper.Services
         /// <summary>
         /// Torna alla pagina precedente del ContentControl di default
         /// </summary>
-        public void GoBack()
+        public async Task GoBack()
         {
-            GoBack( defaultContentName );
+            await GoBack( defaultContentName );
         }
 
         /// <summary>
         /// Torna alla pagina precedente del ContentControl specificato
         /// </summary>
         /// <param name="ContentName">Nome del ContentControl</param>
-        public void GoBack( string ContentName )
+        public async Task GoBack( string ContentName )
         {
             //se ho elementi nella storia di navigazione e se esiste una storia di navigazione
             //per il content control specificato
@@ -130,6 +130,17 @@ namespace MVVMHelper.Services
                 //se ha più di un elemento
                 if( lhi.Count > 1 )
                 {
+                    var content = GetContent( ContentName );
+                    if( content != null )
+                    {
+                        var interactiveContent = ( content.Content as FrameworkElement ).DataContext as IInteractive;
+                        if( interactiveContent != null )
+                        {
+                            if( !await interactiveContent.Leave() )
+                                return;
+                        }
+                    }             
+
                     //rimuovo l'ultimo elemento
                     lhi.RemoveAt( lhi.Count - 1 );
                     //prendo l'attuale ultimo (il penultimo in partenza)
@@ -137,7 +148,7 @@ namespace MVVMHelper.Services
                     //navigo verso l'elemento estratto dalla storia di navigazione
                     //usando la stessa chiave, e gli stessi parametri usati in precedenza
                     //ovviamente uso il ContentName specificato
-                    NavigateTo( hi.pageKey, hi.parameter, ContentName );
+                    await NavigateTo( hi.pageKey, hi.parameter, ContentName );
                 }              
             }
         }
@@ -146,9 +157,9 @@ namespace MVVMHelper.Services
         /// Naviga verso la pagina indicata senza parametri e usando il default content control 
         /// </summary>
         /// <param name="pageKey">chiave della pagina verso cui navigare (deve essere stata in precedenza registrata)</param>
-        public void NavigateTo( string pageKey )
+        public async Task NavigateTo( string pageKey )
         {
-            NavigateTo( pageKey, null );
+            await NavigateTo( pageKey, null );
         }
 
         /// <summary>
@@ -156,9 +167,9 @@ namespace MVVMHelper.Services
         /// </summary>
         /// <param name="pageKey">chiave della pagina verso cui navigare (deve essere stata in precedenza registrata)</param>
         /// <param name="parameter">parametro di navigazione da passare alla pagina</param>
-        public void NavigateTo( string pageKey, object parameter )
+        public async Task NavigateTo( string pageKey, object parameter )
         {
-            NavigateTo( pageKey, parameter, defaultContentName );
+            await NavigateTo( pageKey, parameter, defaultContentName );
         }
 
         /// <summary>
@@ -167,8 +178,50 @@ namespace MVVMHelper.Services
         /// <param name="pageKey">chiave della pagina verso cui navigare (deve essere stata in precedenza registrata)</param>
         /// <param name="parameter">parametro di navigazione da passare alla pagina</param>
         /// <param name="ContentName">Content Name da usare per la navigazione</param>
-        public virtual void NavigateTo( string pageKey, object parameter, string ContentName )
+        public async Task NavigateTo( string pageKey, object parameter, string ContentName )
         {
+            var content = GetContent( ContentName );
+            if( content != null && content.Content != null )
+            {
+                var interactiveContent = ( content.Content as FrameworkElement ).DataContext as IInteractive;
+                if( interactiveContent != null )
+                {
+                    if( !await interactiveContent.Leave() )
+                        return;
+                }
+            }
+            ExecNavigation( pageKey, parameter, ContentName );
+        }
+
+        public async Task ChangePage( string pageKey )
+        {
+            await ChangePage( pageKey, null, null );
+        }
+
+        public async Task ChangePage( string pageKey, object parameter )
+        {
+            await ChangePage( pageKey, parameter, defaultContentName );
+        }
+
+        public async Task ChangePage( string pageKey, object parameter, string ContentName )
+        {
+            if( globalHistory.Count > 0 && globalHistory.ContainsKey( ContentName ) )
+            {
+                //recupero la storia di navigazione del content control
+                List<HistoryItem> lhi = globalHistory[ContentName];
+                //se ha più di un elemento
+                if( lhi.Count > 1 )
+                {
+                    //rimuovo l'ultimo elemento
+                    lhi.RemoveAt( lhi.Count - 1 );                    
+                }
+            }
+
+            await NavigateTo( pageKey, parameter, ContentName );
+        }
+
+        private void ExecNavigation( string pageKey, object parameter, string ContentName )
+        { 
             //locko il dictionary di navigazione
             lock( pagesByKey )
 			{
@@ -216,33 +269,6 @@ namespace MVVMHelper.Services
                     w.Activated += eh;                    
                 }			    
 			}
-        }
-
-        public void ChangePage( string pageKey )
-        {
-            ChangePage( pageKey, null, null );
-        }
-
-        public void ChangePage( string pageKey, object parameter )
-        {
-            ChangePage( pageKey, parameter, defaultContentName );
-        }
-
-        public void ChangePage( string pageKey, object parameter, string ContentName )
-        {
-            if( globalHistory.Count > 0 && globalHistory.ContainsKey( ContentName ) )
-            {
-                //recupero la storia di navigazione del content control
-                List<HistoryItem> lhi = globalHistory[ContentName];
-                //se ha più di un elemento
-                if( lhi.Count > 1 )
-                {
-                    //rimuovo l'ultimo elemento
-                    lhi.RemoveAt( lhi.Count - 1 );                    
-                }
-            }
-
-            NavigateTo( pageKey, parameter, ContentName );
         }
 
         /// <summary>
@@ -313,6 +339,17 @@ namespace MVVMHelper.Services
                 //imposto l'attuale pagina con quella verso cui ho appen navigato
                 CurrentPageKey = pageKey;                
             }	
+        }
+
+        private ContentControl GetContent( string ContentName )
+        {
+            Window w = Application.Current.Windows.OfType<Window>().FirstOrDefault( x => x.IsActive );
+
+            if( w != null )
+                //recupero il content control partendo dalla finestra in uso e cercando il content control tramite il nome passato
+                return TreeHelper.GetDescendantFromName( w.Content as DependencyObject, ContentName ) as ContentControl;
+            else
+                return null;
         }
 
         /// <summary>

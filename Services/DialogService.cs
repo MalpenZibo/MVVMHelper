@@ -33,6 +33,8 @@ namespace MVVMHelper.Services
 
         public string DefaultHostname { get; set; } = "RootDialog";
 
+        public string DefaultCustomHostname { get; set; } = "CustomRootDialog";
+
         public async Task ShowError( Exception error, string title, string buttonText, string hostname = null )
         {
             await ShowError( error.ToString(), title, buttonText, hostname );
@@ -40,12 +42,15 @@ namespace MVVMHelper.Services
 
         public async Task ShowError( string message, string title, string buttonText, string hostname = null )
         {
+            string id = Guid.NewGuid().ToString();
+
             await host.ShowDialog( 
+                id,
                 ( hostname != null ? hostname : DefaultHostname ), 
                 message, 
                 title, 
                 buttonText, 
-                () => host.CloseDialog( true ), 
+                () => host.CloseDialog( id, true ), 
                 null,
                 null, 
                 DialogType.ERROR 
@@ -59,14 +64,17 @@ namespace MVVMHelper.Services
 
         public async Task<bool> ShowConfirmMessage( string message, string title, string buttonConfirmText, string buttonCancelText, string hostname = null )
         {
+            string id = Guid.NewGuid().ToString();
+
             return await host.ShowDialog( 
+                id,
                 ( hostname != null ? hostname : DefaultHostname ),
                 message, 
                 title, 
                 buttonConfirmText,
-                () => host.CloseDialog( true ),
+                () => host.CloseDialog( id, true ),
                 buttonCancelText, 
-                () => host.CloseDialog( false ),
+                () => host.CloseDialog( id, false ),
                 DialogType.MESSAGE 
             );
         }
@@ -74,6 +82,8 @@ namespace MVVMHelper.Services
         public async Task<bool> ShowCustomDialog( string pageKey, object parameter, string buttonConfirmText, string buttonCancelText, string hostname = null )
         {  
             Action confirm = null, cancel = null;
+
+            string id = Guid.NewGuid().ToString();
 
             var content = Activator.CreateInstance( cns.GetPageType( pageKey ) );
             var fe = content as FrameworkElement;
@@ -88,10 +98,10 @@ namespace MVVMHelper.Services
                     if( interactive != null )
                     {
                         if( await interactive.Confirm() )
-                            host.CloseDialog( true );
+                            host.CloseDialog( id, true );
                     }
                     else
-                        host.CloseDialog( true );
+                        host.CloseDialog( id, true );
                 };
 
                 cancel = async () => 
@@ -99,15 +109,16 @@ namespace MVVMHelper.Services
                     if( interactive != null )
                     {
                         if( await interactive.Abort() )
-                            host.CloseDialog( false );
+                            host.CloseDialog( id, false );
                     }
                     else
-                         host.CloseDialog( false );
+                         host.CloseDialog( id, false );
                 };
             }
             
             return await host.ShowDialog( 
-                ( hostname != null ? hostname : DefaultHostname ), 
+                id,
+                ( hostname != null ? hostname : DefaultCustomHostname ), 
                 content, 
                 null, 
                 buttonConfirmText, 
@@ -120,8 +131,11 @@ namespace MVVMHelper.Services
 
         public async Task<bool> ShowCustomDialog( object view, string hostname = null )
         {
+            string id = Guid.NewGuid().ToString();
+
             return await host.ShowDialog( 
-                ( hostname != null ? hostname : DefaultHostname ), 
+                id,
+                ( hostname != null ? hostname : DefaultCustomHostname ), 
                 view, 
                 null, 
                 null, 

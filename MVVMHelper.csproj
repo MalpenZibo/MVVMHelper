@@ -52,6 +52,9 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -73,6 +76,7 @@
     <Compile Include="Behaviors\DataGridCustomSort.cs" />
     <Compile Include="Behaviors\DynamicLoad.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\IocHelper.cs" />
     <Compile Include="Models\ISelectable.cs" />
     <Compile Include="Behaviors\GlobalSelector.cs" />
@@ -90,7 +94,6 @@
     <Compile Include="Helpers\LayoutHelper\LayoutType.cs" />
     <Compile Include="Helpers\LayoutHelper\LayoutTypeChangedEventArgs.cs" />
     <Compile Include="Helpers\PropertyHelper.cs" />
-    <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Services\AppService.cs" />
     <Compile Include="Services\ContentNavigationService.cs" />

@@ -11,17 +11,17 @@ namespace MVVMHelper.Moldels
     /// <summary>
     /// Voce di menu
     /// </summary>
-    public class MenuItem : BaseModel
+    public class MenuItem : ObservableObject
     {
-        private string _name;
-        private string _pageKey;
-        private object _param;
+        private string name;
+        private string pageKey;
+        private object param;
 
         public MenuItem( string name, string pageKey, object parameter )
         {
-            _name = name;
-            _pageKey = pageKey;
-            _param = parameter;
+            this.name = name;
+            this.pageKey = pageKey;
+            this.param = parameter;
         }
 
         public MenuItem( string name, string pageKey ) : this( name, pageKey, null ) { }
@@ -29,13 +29,10 @@ namespace MVVMHelper.Moldels
         /// <summary>
         /// Nome testuale della voce del menu
         /// </summary>
-        public string Name
+        public string Name 
         {
-            get { return _name; }
-            set
-            {
-                SetValue<string>( ref _name, value, "Name" );
-            }
+            get => name;
+            set => Set( "Name", ref name, value ); 
         }
 
         /// <summary>
@@ -43,11 +40,8 @@ namespace MVVMHelper.Moldels
         /// </summary>
         public string PageKey
         {
-            get { return _pageKey; }
-            set
-            {
-                SetValue<string>( ref _pageKey, value, "PageKey" );
-            }
+            get => pageKey;
+            set => Set( "PageKey", ref pageKey, value ); 
         }
 
         /// <summary>
@@ -55,11 +49,8 @@ namespace MVVMHelper.Moldels
         /// </summary>
         public object Parameter
         {
-            get { return _param; }
-            set
-            {
-                SetValue<object>( ref _param, value, "Parameter" );
-            }
+            get => param;
+            set => Set( "Parameter", ref param, value ); 
         }
     }
 }

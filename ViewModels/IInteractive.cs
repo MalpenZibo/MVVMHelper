@@ -19,5 +19,8 @@ namespace MVVMHelper.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         Task<bool> Abort();
+
+
+        Task<bool> Leave();
     }
 }

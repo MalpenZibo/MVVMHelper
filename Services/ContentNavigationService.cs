@@ -148,7 +148,7 @@ namespace MVVMHelper.Services
                     //navigo verso l'elemento estratto dalla storia di navigazione
                     //usando la stessa chiave, e gli stessi parametri usati in precedenza
                     //ovviamente uso il ContentName specificato
-                    await NavigateTo( hi.pageKey, hi.parameter, ContentName );
+                    ExecNavigation( hi.pageKey, hi.parameter, ContentName );
                 }              
             }
         }

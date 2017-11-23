@@ -112,14 +112,24 @@ namespace MVVMHelper.Services
         /// </summary>
         public async Task GoBack()
         {
-            await GoBack( defaultContentName );
+            await GoBack( 1, defaultContentName );
+        }
+
+        public async Task GoBack( int index )
+        {
+            await GoBack( index, defaultContentName );
+        }
+
+        public async Task GoBack( string ContentName )
+        {
+            await GoBack( 1, defaultContentName );
         }
 
         /// <summary>
         /// Torna alla pagina precedente del ContentControl specificato
         /// </summary>
         /// <param name="ContentName">Nome del ContentControl</param>
-        public async Task GoBack( string ContentName )
+        public async Task GoBack( int index, string ContentName )
         {
             //se ho elementi nella storia di navigazione e se esiste una storia di navigazione
             //per il content control specificato
@@ -141,10 +151,14 @@ namespace MVVMHelper.Services
                         }
                     }             
 
-                    //rimuovo l'ultimo elemento
-                    lhi.RemoveAt( lhi.Count - 1 );
-                    //prendo l'attuale ultimo (il penultimo in partenza)
-                    HistoryItem hi = lhi.Last();
+                    HistoryItem hi = null;
+                    while( lhi.Count > 1 && index-- > 0 )
+                    {
+                        //rimuovo l'ultimo elemento
+                        lhi.RemoveAt( lhi.Count - 1 );
+                        //prendo l'attuale ultimo (il penultimo in partenza)
+                        hi = lhi.Last();
+                    }
                     //navigo verso l'elemento estratto dalla storia di navigazione
                     //usando la stessa chiave, e gli stessi parametri usati in precedenza
                     //ovviamente uso il ContentName specificato

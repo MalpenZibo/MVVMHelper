@@ -122,7 +122,7 @@ namespace MVVMHelper.Services
 
         public async Task GoBack( string ContentName )
         {
-            await GoBack( 1, defaultContentName );
+            await GoBack( 1, ContentName );
         }
 
         /// <summary>
